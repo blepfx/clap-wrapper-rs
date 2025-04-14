@@ -1,12 +1,14 @@
 use std::{
     fmt::Display,
     hash::{DefaultHasher, Hash, Hasher},
+    panic::{AssertUnwindSafe, catch_unwind, resume_unwind},
     path::{Path, PathBuf, absolute},
 };
 
 fn main() {
     println!("cargo:rerun-if-env-changed=CLAP_WRAPPER_VST3_SDK");
     println!("cargo:rerun-if-env-changed=CLAP_WRAPPER_AUV2_SDK");
+    println!("cargo:rerun-if-env-changed=CLAP_WRAPPER_VERBOSE");
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rustc-check-cfg=cfg(clap_wrapper_vst3)");
     println!("cargo:rustc-check-cfg=cfg(clap_wrapper_auv2)");
@@ -14,6 +16,7 @@ fn main() {
     let context = BuildContext {
         os: std::env::var("CARGO_CFG_TARGET_OS").unwrap(),
         debug: std::env::var("DEBUG").unwrap_or_default() == "true",
+        verbose: std::env::var("CLAP_WRAPPER_VERBOSE").unwrap_or_default() == "1",
         vst3_sdk: std::env::var_os("CLAP_WRAPPER_VST3_SDK").map(PathBuf::from),
         auv2_sdk: std::env::var_os("CLAP_WRAPPER_AUV2_SDK").map(PathBuf::from),
     };
@@ -25,6 +28,7 @@ fn main() {
 struct BuildContext {
     os: String,
     debug: bool,
+    verbose: bool,
 
     vst3_sdk: Option<PathBuf>,
     auv2_sdk: Option<PathBuf>,
@@ -32,19 +36,27 @@ struct BuildContext {
 
 fn build_vst3(context: &BuildContext) {
     let sdk = match context.vst3_sdk {
-        Some(ref sdk) => std::fs::canonicalize(sdk).unwrap_or_else(|e| {
-            panic!(
-                "invalid vst3 sdk path: {} ({})",
-                absolute(sdk).unwrap_or(sdk.clone()).display(),
-                e.kind()
-            )
-        }),
+        Some(ref sdk) => {
+            if !sdk.is_dir() {
+                panic!(
+                    "invalid vst3 sdk path: {}",
+                    absolute(sdk).unwrap_or(sdk.clone()).display(),
+                )
+            }
+
+            sdk
+        }
         None => return,
     };
 
     run_cached(format_args!("vst3-{}", sdk.display()), |dir| {
         let mut cc = cc::Build::new();
         cc.cpp(true).std("c++17");
+
+        // msvc stuff
+        cc.flag_if_supported("/utf-8");
+        cc.flag_if_supported("/EHsc");
+
         cc.out_dir(dir);
 
         cc.include("clap/include");
@@ -121,6 +133,7 @@ fn build_vst3(context: &BuildContext) {
                 cc.file(sdk.join("public.sdk/source/main/macmain.cpp"));
                 cc.file("clap-wrapper/src/detail/os/macos.mm");
                 cc.file("clap-wrapper/src/detail/clap/mac_helpers.mm");
+                cc.define("MACOS_USE_STD_FILESYSTEM", None); //FIXME: this makes the minimum macos version 10.15
                 cc.define("MAC", None);
 
                 println!("cargo:rustc-link-lib=framework=CoreFoundation");
@@ -141,9 +154,13 @@ fn build_vst3(context: &BuildContext) {
             }
         }
 
-        cc.warnings(false);
-        cc.cargo_warnings(false);
-        cc.compile("clap_wrapper_vst3");
+        if !context.verbose {
+            cc.warnings(false);
+            cc.cargo_warnings(false);
+        }
+
+        cc.try_compile("clap_wrapper_vst3")
+            .unwrap_or_else(|e| panic!("failed to compile clap-wrapper (vst3): {}", e));
 
         println!("cargo:rustc-cfg=clap_wrapper_vst3");
     });
@@ -152,25 +169,30 @@ fn build_vst3(context: &BuildContext) {
 /// FIXME: not fully implemented/tested yet
 fn build_auv2(context: &BuildContext) {
     let sdk = match context.auv2_sdk {
-        Some(ref sdk) if context.os == "macos" => std::fs::canonicalize(sdk).unwrap_or_else(|e| {
-            panic!(
-                "invalid auv2 sdk path: {} ({})",
-                absolute(sdk).unwrap_or(sdk.clone()).display(),
-                e.kind()
-            )
-        }),
+        Some(ref sdk) if context.os == "macos" => {
+            if !sdk.is_dir() {
+                panic!(
+                    "invalid auv2 sdk path: {}",
+                    absolute(sdk).unwrap_or(sdk.clone()).display(),
+                )
+            }
+
+            sdk
+        }
         _ => return,
     };
 
     run_cached(format_args!("auv2-{}", sdk.display()), |dir| {
         let mut cc = cc::Build::new();
-        cc.cpp(true).std("c++17");
+        cc.cpp(true).std("c++20");
+        cc.flag_if_supported("-fno-char8_t");
         cc.out_dir(dir);
 
         cc.include("src/cpp");
         cc.include("clap/include");
         cc.include("clap-wrapper/include");
         cc.include("clap-wrapper/libs/fmt");
+        cc.include("clap-wrapper/src");
         cc.include(sdk.join("include"));
 
         cc.define("CLAP_WRAPPER_VERSION", Some("\"0.11.0\""));
@@ -216,6 +238,7 @@ fn build_auv2(context: &BuildContext) {
 
         cc.file("clap-wrapper/src/detail/os/macos.mm");
         cc.file("clap-wrapper/src/detail/clap/mac_helpers.mm");
+        cc.define("MACOS_USE_STD_FILESYSTEM", None); //FIXME: this makes the minimum macos version 10.15
         cc.define("MAC", None);
 
         println!("cargo:rustc-link-lib=framework=Foundation");
@@ -230,9 +253,13 @@ fn build_auv2(context: &BuildContext) {
             cc.define("RELEASE", Some("1"));
         }
 
-        cc.warnings(false);
-        cc.cargo_warnings(false);
-        cc.compile("clap_wrapper_auv2");
+        if !context.verbose {
+            cc.warnings(false);
+            cc.cargo_warnings(false);
+        }
+
+        cc.try_compile("clap_wrapper_auv2")
+            .unwrap_or_else(|e| panic!("failed to compile clap-wrapper (auv2): {}", e));
 
         println!("cargo:rustc-cfg=clap_wrapper_auv2");
     });
@@ -242,7 +269,7 @@ fn walk_files(dir: PathBuf, ext: &str) -> Vec<PathBuf> {
     let mut stack = Vec::new();
     let mut files = Vec::new();
 
-    stack.push(dir);
+    stack.push(dir.clone());
     while let Some(top) = stack.pop() {
         for entry in std::fs::read_dir(&top).unwrap() {
             let path = entry.unwrap().path();
@@ -274,11 +301,23 @@ fn run_cached(key: impl Display, f: impl FnOnce(&Path)) {
         Some(s) => s,
         _ => {
             let stdio = stdio_override::StdoutOverride::from_file(&lock_path).unwrap();
-            f(&cache_dir);
+            let result = catch_unwind(AssertUnwindSafe(|| {
+                f(&cache_dir);
+            }));
+
             drop(stdio);
 
-            std::fs::rename(&lock_path, &log_path).unwrap();
-            std::fs::read_to_string(&log_path).unwrap()
+            let output = std::fs::read_to_string(&lock_path).unwrap();
+            match result {
+                Ok(_) => {
+                    std::fs::rename(&lock_path, &log_path).unwrap();
+                    output
+                }
+                Err(e) => {
+                    println!("{}", output);
+                    resume_unwind(e)
+                }
+            }
         }
     };
 
