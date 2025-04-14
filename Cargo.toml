@@ -1,0 +1,19 @@
+[workspace]
+resolver = "3"
+members = [ 
+    ".",
+    "examples/example-clap"
+]
+
+[package]
+name = "clap-wrapper"
+version = "0.1.0"
+edition = "2024"
+
+[build-dependencies]
+cc = "1.2.11"
+stdio-override = "0.2.0"
+
+[profile.dev]
+opt-level = 1
+incremental = true

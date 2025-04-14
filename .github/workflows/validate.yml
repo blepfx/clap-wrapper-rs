@@ -1,0 +1,127 @@
+name: Validate
+
+on: [push]
+jobs:
+  validate-linux-x86_64:
+    name: Validate (Linux x86_64)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: recursive
+
+      - name: Checkout `vst3sdk`
+        shell: bash
+        run: |
+            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
+            cd vst3sdk
+            git submodule update --init base
+            git submodule update --init cmake
+            git submodule update --init public.sdk
+            git submodule update --init pluginterfaces
+            cd ..
+
+      - name: Build `vst3-validator`
+        shell: bash
+        run: |
+            cd vst3sdk
+            cmake -B cmake-build
+            cmake --build cmake-build --target validator
+            cd ..
+
+      - name: Build `example-clap`
+        shell: bash
+        run: |
+            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" cargo build -p example-clap
+            mkdir -p example-clap.vst3/Contents/x86_64-linux/
+            mv target/debug/libexample_clap.so example-clap.vst3/Contents/x86_64-linux/example-clap.so
+            
+      - name: Run `vst3-validator`
+        shell: bash
+        run: |
+            "./vst3sdk/cmake-build/bin/validator" -e "./example-clap.vst3" 
+
+  validate-windows-x86_64:
+    name: Validate (Windows x86_64)
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: recursive
+
+      - name: Checkout `vst3sdk`
+        shell: bash
+        run: |
+            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
+            cd vst3sdk
+            git submodule update --init base
+            git submodule update --init cmake
+            git submodule update --init public.sdk
+            git submodule update --init pluginterfaces
+            cd ..
+
+      - name: Build `vst3-validator`
+        shell: bash
+        run: |
+            cd vst3sdk
+            cmake -B cmake-build
+            cmake --build cmake-build --target validator
+            cd ..
+
+      - name: Build `example-clap`
+        shell: bash
+        run: |
+            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" cargo build -p example-clap
+            mv target/debug/example_clap.dll example-clap.vst3
+       
+      - name: Run `vst3-validator`
+        shell: bash
+        run: |
+            "./vst3sdk/cmake-build/bin/Debug/validator" -e "./example-clap.vst3" 
+      
+  validate-macos-x86_64:
+    name: Validate (macOS x86_64)
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: recursive
+
+      - name: Checkout `vst3sdk`
+        shell: bash
+        run: |
+            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
+            cd vst3sdk
+            git submodule update --init base
+            git submodule update --init cmake
+            git submodule update --init public.sdk
+            git submodule update --init pluginterfaces
+            cd ..
+
+      - name: Checkout `AudioUnitSDK`
+        shell: bash
+        run: |
+            git clone --depth=1 https://github.com/apple/AudioUnitSDK 
+
+      - name: Build `vst3-validator`
+        shell: bash
+        run: |
+            cd vst3sdk
+            cmake -B cmake-build
+            cmake --build cmake-build --target validator
+            cd ..
+
+      - name: Build `example-clap`
+        shell: bash
+        run: |
+            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_AUV2_SDK="$(realpath AudioUnitSDK)" cargo build -p example-clap
+            mkdir -p example-clap.vst3/Contents/x86_64-linux/
+            mv target/debug/libexample_clap.dylib example-clap.vst3/Contents/MacOS/example-clap.so
+
+      - name: Run `vst3-validator`
+        shell: bash
+        run: |
+            "./vst3sdk/cmake-build/bin/validator" -e "./example-clap.vst3" 
