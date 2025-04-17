@@ -6,7 +6,12 @@ jobs:
     strategy:
       matrix:
         runner: [ubuntu-22.04]
-    name: Validate (${{ matrix.runner }})
+        package: [example-clap]
+        include:
+          - package: example-clap
+            library_name: libexample_clap.so
+          
+    name: Validate "${{ matrix.package }}" (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
@@ -25,20 +30,20 @@ jobs:
             git submodule update --init pluginterfaces
             cd ..
 
-      - name: Build `example-clap`
+      - name: Build `${{ matrix.package }}`
         shell: bash
         run: |
-            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_VERBOSE=1 cargo build -p example-clap
+            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_VERBOSE=1 cargo build -p ${{ matrix.package }}
             
             # bundle vst3
-            mkdir -p example-clap.vst3/Contents/x86_64-linux/
-            mv target/debug/libexample_clap.so example-clap.vst3/Contents/x86_64-linux/example-clap.so
+            mkdir -p ${{ matrix.package }}.vst3/Contents/x86_64-linux/
+            mv target/debug/${{ matrix.library_name }} ${{ matrix.package }}.vst3/Contents/x86_64-linux/${{ matrix.package }}.so
   
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.runner }}-vst3
-          path: example-clap.vst3
+          name: ${{ matrix.package }}-${{ matrix.runner }}-vst3
+          path: ${{ matrix.package }}.vst3
           retention-days: 1
 
       - name: Build `vst3-validator`
@@ -52,13 +57,18 @@ jobs:
       - name: Run `vst3-validator`
         shell: bash
         run: |
-            "./vst3sdk/cmake-build/bin/validator" -e "./example-clap.vst3" 
+            "./vst3sdk/cmake-build/bin/validator" -e "./${{ matrix.package }}.vst3" 
 
   validate-windows:
     strategy:
       matrix:
         runner: [windows-2022]
-    name: Validate (${{ matrix.runner }})
+        package: [example-clap]
+        include:
+          - package: example-clap
+            library_name: example_clap.dll
+
+    name: Validate "${{ matrix.package }}" (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
@@ -77,22 +87,22 @@ jobs:
             git submodule update --init pluginterfaces
             cd ..
 
-      - name: Build `example-clap`
+      - name: Build `${{ matrix.package }}`
         shell: bash
         run: |
-            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_VERBOSE=1 cargo build -p example-clap
+            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_VERBOSE=1 cargo build -p ${{ matrix.package }}
 
             # bundle vst3. we dont really have to do that as the dll file by itself can be used as a vst3, 
             # but the validator really wants it to be a vst3 bundle so we have no choice
             # for more info on directory structure, see https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Format.html
-            mkdir -p example-clap.vst3/Contents/x86_64-win/
-            mv target/debug/example_clap.dll example-clap.vst3/Contents/x86_64-win/example-clap.vst3
+            mkdir -p ${{ matrix.package }}.vst3/Contents/x86_64-win/
+            mv target/debug/${{ matrix.library_name }} ${{ matrix.package }}.vst3/Contents/x86_64-win/${{ matrix.package }}.vst3
 
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.runner }}-vst3
-          path: example-clap.vst3
+          name: ${{ matrix.package }}-${{ matrix.runner }}-vst3
+          path: ${{ matrix.package }}.vst3
           retention-days: 1
 
       - name: Build `vst3-validator`
@@ -106,13 +116,21 @@ jobs:
       - name: Run `vst3-validator`
         shell: bash
         run: |
-            "./vst3sdk/cmake-build/bin/Debug/validator" -e "./example-clap.vst3" 
+            "./vst3sdk/cmake-build/bin/Debug/validator" -e "./${{ matrix.package }}.vst3" 
       
   validate-macos:
     strategy:
       matrix:
         runner: [macos-13, macos-15]
-    name: Validate (${{ matrix.runner }})
+        package: [example-clap]
+        include:
+          - package: example-clap
+            library_name: libexample_clap.dylib
+            auv2_type: aufx
+            auv2_subtype: gain
+            auv2_manufacturer: Mois
+
+    name: Validate "${{ matrix.package }}" (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
@@ -136,40 +154,40 @@ jobs:
         run: |
             git clone --depth=1 https://github.com/apple/AudioUnitSDK 
 
-      - name: Build `example-clap`
+      - name: Build `${{ matrix.package }}`
         shell: bash
         run: |
-            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_AUV2_SDK="$(realpath AudioUnitSDK)" CLAP_WRAPPER_VERBOSE=1 cargo build -p example-clap
+            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_AUV2_SDK="$(realpath AudioUnitSDK)" CLAP_WRAPPER_VERBOSE=1 cargo build -p ${{ matrix.package }}
             
             # bundle vst3 and include the Info.plist stuff
             # for more info on directory structure, see https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Format.html
-            mkdir -p example-clap.vst3/Contents/MacOS/
-            cp target/debug/libexample_clap.dylib example-clap.vst3/Contents/MacOS/example-clap
-            cp examples/example-clap/Info.vst3.plist example-clap.vst3/Contents/Info.plist
-            echo "BNDL????" > example-clap.vst3/Contents/PkgInfo
+            mkdir -p ${{ matrix.package }}.vst3/Contents/MacOS/
+            cp target/debug/libexample_clap.dylib ${{ matrix.package }}.vst3/Contents/MacOS/${{ matrix.package }}
+            cp examples/${{ matrix.package }}/Info.vst3.plist ${{ matrix.package }}.vst3/Contents/Info.plist
+            echo "BNDL????" > ${{ matrix.package }}.vst3/Contents/PkgInfo
 
             # bundle auval and include the Info.plist stuff
-            mkdir -p example-clap.component/Contents/MacOS/
-            cp target/debug/libexample_clap.dylib example-clap.component/Contents/MacOS/example-clap
-            cp examples/example-clap/Info.auv2.plist example-clap.component/Contents/Info.plist
-            echo "BNDL????" > example-clap.component/Contents/PkgInfo
+            mkdir -p ${{ matrix.package }}.component/Contents/MacOS/
+            cp target/debug/${{ matrix.library_name }} ${{ matrix.package }}.component/Contents/MacOS/${{ matrix.package }}
+            cp examples/${{ matrix.package }}/Info.auv2.plist ${{ matrix.package }}.component/Contents/Info.plist
+            echo "BNDL????" > ${{ matrix.package }}.component/Contents/PkgInfo
 
             # sign the plugins without an associated identity
-            codesign --force --timestamp --deep -s - example-clap.vst3
-            codesign --force --timestamp --deep -s - example-clap.component
+            codesign --force --timestamp --deep -s - ${{ matrix.package }}.vst3
+            codesign --force --timestamp --deep -s - ${{ matrix.package }}.component
 
       - name: Upload AUv2
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.runner }}-auv2
-          path: example-clap.component
+          name: ${{ matrix.package }}-${{ matrix.runner }}-auv2
+          path: ${{ matrix.package }}.component
           retention-days: 1
 
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.runner }}-vst3
-          path: example-clap.vst3
+          name: ${{ matrix.package }}-${{ matrix.runner }}-vst3
+          path: ${{ matrix.package }}.vst3
           retention-days: 1
 
       - name: Build `vst3-validator`
@@ -183,13 +201,13 @@ jobs:
       - name: Run `vst3-validator`
         shell: bash
         run: |
-            "./vst3sdk/cmake-build/bin/validator" -e "./example-clap.vst3" 
+            "./vst3sdk/cmake-build/bin/validator" -e "./${{ matrix.package }}.vst3" 
 
       - name: Run `auval`
         shell: bash
         run: |
             mkdir -p ~/Library/Audio/Plug-Ins/Components
-            mv example-clap.component ~/Library/Audio/Plug-Ins/Components/example-clap.component
+            mv ${{ matrix.package }}.component ~/Library/Audio/Plug-Ins/Components/${{ matrix.package }}.component
             killall -9 AudioComponentRegistrar
             auval -a
-            auval -strict -v aufx gain Mois
+            auval -strict -v ${{ matrix.auv2_type }} ${{ matrix.auv2_subtype }} ${{ matrix.auv2_manufacturer }}
