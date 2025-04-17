@@ -6,10 +6,12 @@ jobs:
     strategy:
       matrix:
         runner: [ubuntu-22.04]
-        package: [example-clap]
+        package: [example-nih-plug, example-clack]
         include:
-          - package: example-clap
-            library_name: libexample_clap.so
+          - package: example-nih-plug
+            library_name: libexample_nih_plug.so
+          - package: example-clack
+            library_name: libexample_clack.so
           
     name: Validate "${{ matrix.package }}" (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
@@ -63,10 +65,12 @@ jobs:
     strategy:
       matrix:
         runner: [windows-2022]
-        package: [example-clap]
+        package: [example-nih-plug, example-clack]
         include:
-          - package: example-clap
-            library_name: example_clap.dll
+          - package: example-nih-plug
+            library_name: example_nih_plug.dll
+          - package: example-clack
+            library_name: example_clack.dll
 
     name: Validate "${{ matrix.package }}" (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
@@ -121,14 +125,19 @@ jobs:
   validate-macos:
     strategy:
       matrix:
-        runner: [macos-13, macos-15]
-        package: [example-clap]
+        runner: [macos-15]
+        package: [example-nih-plug, example-clack]
         include:
-          - package: example-clap
-            library_name: libexample_clap.dylib
+          - package: example-nih-plug
+            library_name: libexample_nih_plug.dylib
             auv2_type: aufx
             auv2_subtype: gain
             auv2_manufacturer: Mois
+          - package: example-clack
+            library_name: libexample_clack.dylib
+            auv2_type: aumu
+            auv2_subtype: psyn
+            auv2_manufacturer: Clck
 
     name: Validate "${{ matrix.package }}" (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
@@ -162,7 +171,7 @@ jobs:
             # bundle vst3 and include the Info.plist stuff
             # for more info on directory structure, see https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Format.html
             mkdir -p ${{ matrix.package }}.vst3/Contents/MacOS/
-            cp target/debug/libexample_clap.dylib ${{ matrix.package }}.vst3/Contents/MacOS/${{ matrix.package }}
+            cp target/debug/${{ matrix.library_name }} ${{ matrix.package }}.vst3/Contents/MacOS/${{ matrix.package }}
             cp examples/${{ matrix.package }}/Info.vst3.plist ${{ matrix.package }}.vst3/Contents/Info.plist
             echo "BNDL????" > ${{ matrix.package }}.vst3/Contents/PkgInfo
 
@@ -206,8 +215,8 @@ jobs:
       - name: Run `auval`
         shell: bash
         run: |
-            mkdir -p ~/Library/Audio/Plug-Ins/Components
-            mv ${{ matrix.package }}.component ~/Library/Audio/Plug-Ins/Components/${{ matrix.package }}.component
-            killall -9 AudioComponentRegistrar
+            mkdir -p ~/Library/Audio/Plug-Ins/Components/
+            cp -R ${{ matrix.package }}.component ~/Library/Audio/Plug-Ins/Components/
+            killall -9 AudioComponentRegistrar || true
             auval -a
             auval -strict -v ${{ matrix.auv2_type }} ${{ matrix.auv2_subtype }} ${{ matrix.auv2_manufacturer }}

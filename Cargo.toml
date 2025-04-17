@@ -1,8 +1,9 @@
 [workspace]
 resolver = "3"
 members = [ 
-    ".",
-    "examples/example-clap"
+    ".", 
+    "examples/example-clack",
+    "examples/example-nih-plug"
 ]
 
 [package]
@@ -13,7 +14,3 @@ edition = "2024"
 [build-dependencies]
 cc = "1.2.11"
 stdio-override = "0.2.0"
-
-[profile.dev]
-opt-level = 1
-incremental = true

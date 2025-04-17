@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist>
+  <dict>
+    <key>CFBundleExecutable</key>
+    <string>example-nih-plug</string>
+    <key>CFBundleIconFile</key>
+    <string></string>
+    <key>CFBundleIdentifier</key>
+    <string>com.moist-plugins-gmbh.gain</string>
+    <key>CFBundleName</key>
+    <string>Gain</string>
+    <key>CFBundleDisplayName</key>
+    <string>Gain</string>
+    <key>CFBundlePackageType</key>
+    <string>BNDL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1.0.0</string>
+    <key>CFBundleSupportedPlatforms</key>
+    <array>
+      <string>MacOSX</string>
+    </array>
+    <key>NSHumanReadableCopyright</key>
+    <string>Moist Plugins GmbH</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSPrincipalClass</key>
+    <string/>
+    <key>AudioComponents</key>
+    <array>
+      <dict>
+        <key>name</key>
+        <string>Moist Plugins GmbH: Gain</string>
+        <key>description</key>
+        <string>Moist Plugins GmbH: Gain</string>
+        <key>factoryFunction</key>
+        <string>GetPluginFactoryAUV2</string>
+        <key>manufacturer</key>
+        <string>Mois</string>
+        <key>subtype</key>
+        <string>gain</string>
+        <key>type</key>
+        <string>aufx</string>
+        <key>version</key>
+        <integer>65536</integer>
+        <key>sandboxSafe</key>
+        <true/>
+        <key>resourceUsage</key>
+        <dict>
+           <key>network.client</key>
+           <true/>
+           <key>temporary-exception.files.all.read-write</key>
+           <true/>
+        </dict>
+      </dict>
+    </array>
+  </dict>
+</plist>

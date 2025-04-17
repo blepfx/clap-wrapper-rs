@@ -101,6 +101,41 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "clack-common"
+version = "0.1.0"
+source = "git+https://github.com/prokopyl/clack#5deaa1be9b5af7078d75cbe54abefee12ed40f63"
+dependencies = [
+ "bitflags 2.9.0",
+ "clap-sys 0.4.0",
+]
+
+[[package]]
+name = "clack-extensions"
+version = "0.1.0"
+source = "git+https://github.com/prokopyl/clack#5deaa1be9b5af7078d75cbe54abefee12ed40f63"
+dependencies = [
+ "bitflags 2.9.0",
+ "clack-common",
+ "clack-plugin",
+ "clap-sys 0.4.0",
+]
+
+[[package]]
+name = "clack-plugin"
+version = "0.1.0"
+source = "git+https://github.com/prokopyl/clack#5deaa1be9b5af7078d75cbe54abefee12ed40f63"
+dependencies = [
+ "clack-common",
+ "clap-sys 0.4.0",
+]
+
+[[package]]
+name = "clap-sys"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "61b04354981cd059bf376007c9361ded38b15de87972e634670799685b042197"
+
+[[package]]
 name = "clap-sys"
 version = "0.5.0"
 source = "git+https://github.com/micahrj/clap-sys.git?rev=25d7f53fdb6363ad63fbd80049cb7a42a97ac156#25d7f53fdb6363ad63fbd80049cb7a42a97ac156"
@@ -195,7 +230,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "example-clap"
+name = "example-clack"
+version = "0.1.0"
+dependencies = [
+ "clack-extensions",
+ "clack-plugin",
+ "clap-wrapper",
+]
+
+[[package]]
+name = "example-nih-plug"
 version = "0.1.0"
 dependencies = [
  "clap-wrapper",
@@ -301,7 +345,7 @@ dependencies = [
  "backtrace",
  "bitflags 1.3.2",
  "cfg-if",
- "clap-sys",
+ "clap-sys 0.5.0",
  "core-foundation",
  "crossbeam",
  "libc",
