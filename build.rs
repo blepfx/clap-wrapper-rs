@@ -144,6 +144,10 @@ fn build_vst3(context: &BuildContext) {
                 cc.file(sdk.join("public.sdk/source/main/dllmain.cpp"));
                 cc.file("clap-wrapper/src/detail/os/windows.cpp");
                 cc.define("WIN", None);
+
+                println!("cargo:rustc-link-lib=Shell32");
+                println!("cargo:rustc-link-lib=user32");
+                println!("cargo:rustc-link-lib=ole32");
             }
             "linux" => {
                 cc.file(sdk.join("public.sdk/source/main/linuxmain.cpp"));
