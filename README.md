@@ -2,7 +2,7 @@
 
 [![Validate](https://github.com/blepfx/clap-wrapper-rs/actions/workflows/validate.yml/badge.svg)](https://github.com/blepfx/clap-wrapper-rs/actions/workflows/validate.yml)
 
-An easy way to use [clap-wrapper](https://github.com/https://github.com/free-audio/clap-wrapper) in your Rust plugins!
+An easy way to use [clap-wrapper](https://github.com/free-audio/clap-wrapper) in your Rust plugins!
 
 ## Features
 - Provides a simple way to export Rust-based CLAP plugins as VST3 and AUv2 plugins.

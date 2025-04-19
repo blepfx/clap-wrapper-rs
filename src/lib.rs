@@ -1,4 +1,6 @@
+#![doc = include_str!("../README.md")]
 #![allow(non_snake_case)]
+#![no_std]
 
 #[cfg(clap_wrapper_vst3)]
 #[doc(hidden)]
