@@ -42,7 +42,7 @@ Keep in mind, that `clap-wrapper-rs` only adds the necessary entrypoints that re
 
 After building, you have to manually "bundle" your plugin. This means setting up the correct directory structure and copying the necessary files. See [VST 3 Developer Portal: Plug-in Format Structure](https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Format.html) for more info about VST3 directory structure. For AUv2, the directory structure is similar. 
 Note that when building for MacOS you have to add a `Info.plist` file yourself.
-Check out [Info.vst3.plist](examples/example-clap/Info.vst3.plist) and [Info.auv2.plist](examples/example-clap/Info.auv2.plist) for an example of what `Info.plist` should look like.
+Check out [Info.vst3.plist](examples/example-clack/Info.vst3.plist) and [Info.auv2.plist](examples/example-clack/Info.auv2.plist) for an example of what `Info.plist` should look like.
 
 
 See [validate.yml](.github/workflows/validate.yml) for a complete example of how to build, bundle and validate a plugin.
