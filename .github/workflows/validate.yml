@@ -31,6 +31,12 @@ jobs:
             git submodule update --init public.sdk
             git submodule update --init pluginterfaces
             cd ..
+        
+      - name: Install dependencies
+        shell: bash
+        run: |
+            # needed for baseview
+            sudo apt-get install libx11-dev libxcb1-dev libx11-xcb-dev libgl1-mesa-dev
 
       - name: Build `${{ matrix.package }}`
         shell: bash
