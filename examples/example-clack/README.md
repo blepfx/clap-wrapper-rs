@@ -1,7 +1,7 @@
 # `clack` example for `clap-wrapper-rs`
 
-This example demonstrates how to use **[clack](https://github.com/prokopyl/clack)** with `clap-wrapper-rs` to make a VST3/AUv2 audio plugin. 
-It is based on the [polysynth](https://github.com/prokopyl/clack/tree/main/plugin/examples/polysynth) example from the `clack` repository.
+This example demonstrates how to use **[clack](https://github.com/prokopyl/clack/tree/5deaa1be9b5af7078d75cbe54abefee12ed40f63)** with `clap-wrapper-rs` to make a VST3/AUv2 audio plugin. 
+It is based on the [polysynth](https://github.com/prokopyl/clack/tree/5deaa1be9b5af7078d75cbe54abefee12ed40f63/plugin/examples/polysynth) example from the `clack` repository.
 
 See [Info.auv2.plist](Info.auv2.plist) and [Info.vst3.plist](Info.vst3.plist) for the examples of required MacOS bundle metadata.
 
