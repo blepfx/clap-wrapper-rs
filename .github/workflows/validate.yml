@@ -131,7 +131,7 @@ jobs:
   validate-macos:
     strategy:
       matrix:
-        runner: [macos-15]
+        runner: [macos-13]
         package: [example-nih-plug, example-clack]
         include:
           - package: example-nih-plug
