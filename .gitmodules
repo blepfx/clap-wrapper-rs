@@ -1,6 +1,9 @@
 [submodule "clap-wrapper"]
-	path = clap-wrapper
+	path = external/clap-wrapper
 	url = https://github.com/free-audio/clap-wrapper
 [submodule "clap"]
-	path = clap
+	path = external/clap
 	url = https://github.com/free-audio/clap
+[submodule "filesystem"]
+	path = external/filesystem
+	url = https://github.com/gulrak/filesystem

@@ -59,10 +59,10 @@ fn build_vst3(context: &BuildContext) {
 
         cc.out_dir(dir);
 
-        cc.include("clap/include");
-        cc.include("clap-wrapper/include");
-        cc.include("clap-wrapper/libs/fmt");
-        cc.include("clap-wrapper/src");
+        cc.include("./external/clap/include");
+        cc.include("./external/clap-wrapper/include");
+        cc.include("./external/clap-wrapper/libs/fmt");
+        cc.include("./external/clap-wrapper/src");
         cc.include(&sdk);
         cc.include(sdk.join("public.sdk"));
         cc.include(sdk.join("pluginterfaces"));
@@ -107,20 +107,20 @@ fn build_vst3(context: &BuildContext) {
 
         // clap wrapper shared
         cc.files([
-            "clap-wrapper/src/clap_proxy.cpp",
-            "clap-wrapper/src/detail/clap/fsutil.cpp",
-            "clap-wrapper/src/detail/shared/sha1.cpp",
+            "./external/clap-wrapper/src/clap_proxy.cpp",
+            "./external/clap-wrapper/src/detail/clap/fsutil.cpp",
+            "./external/clap-wrapper/src/detail/shared/sha1.cpp",
         ]);
 
         // clap vst3 wrapper
         cc.files([
-            "clap-wrapper/src/wrapasvst3_export_entry.cpp",
-            "clap-wrapper/src/wrapasvst3.cpp",
-            "clap-wrapper/src/wrapasvst3_entry.cpp",
-            "clap-wrapper/src/detail/vst3/parameter.cpp",
-            "clap-wrapper/src/detail/vst3/plugview.cpp",
-            "clap-wrapper/src/detail/vst3/process.cpp",
-            "clap-wrapper/src/detail/vst3/categories.cpp",
+            "./external/clap-wrapper/src/wrapasvst3_export_entry.cpp",
+            "./external/clap-wrapper/src/wrapasvst3.cpp",
+            "./external/clap-wrapper/src/wrapasvst3_entry.cpp",
+            "./external/clap-wrapper/src/detail/vst3/parameter.cpp",
+            "./external/clap-wrapper/src/detail/vst3/plugview.cpp",
+            "./external/clap-wrapper/src/detail/vst3/process.cpp",
+            "./external/clap-wrapper/src/detail/vst3/categories.cpp",
         ]);
 
         if context.debug {
@@ -132,17 +132,21 @@ fn build_vst3(context: &BuildContext) {
         match context.os.as_str() {
             "macos" => {
                 cc.file(sdk.join("public.sdk/source/main/macmain.cpp"));
-                cc.file("clap-wrapper/src/detail/os/macos.mm");
-                cc.file("clap-wrapper/src/detail/clap/mac_helpers.mm");
-                cc.define("MACOS_USE_STD_FILESYSTEM", None); //FIXME: this makes the minimum macos version 10.15
+                cc.file("./external/clap-wrapper/src/detail/os/macos.mm");
+                cc.file("./external/clap-wrapper/src/detail/clap/mac_helpers.mm");
+
                 cc.define("MAC", None);
+
+                // TODO: test on macos below 10.15
+                cc.define("MACOS_USE_GHC_FILESYSTEM", None);
+                cc.include("./external/filesystem/include");
 
                 println!("cargo:rustc-link-lib=framework=CoreFoundation");
                 println!("cargo:rustc-link-lib=framework=Foundation");
             }
             "windows" => {
                 cc.file(sdk.join("public.sdk/source/main/dllmain.cpp"));
-                cc.file("clap-wrapper/src/detail/os/windows.cpp");
+                cc.file("./external/clap-wrapper/src/detail/os/windows.cpp");
                 cc.define("WIN", None);
 
                 println!("cargo:rustc-link-lib=Shell32");
@@ -151,7 +155,7 @@ fn build_vst3(context: &BuildContext) {
             }
             "linux" => {
                 cc.file(sdk.join("public.sdk/source/main/linuxmain.cpp"));
-                cc.file("clap-wrapper/src/detail/os/linux.cpp");
+                cc.file("./external/clap-wrapper/src/detail/os/linux.cpp");
                 cc.define("LIN", None);
             }
             _ => {
@@ -171,7 +175,6 @@ fn build_vst3(context: &BuildContext) {
     });
 }
 
-/// FIXME: not fully implemented/tested yet
 fn build_auv2(context: &BuildContext) {
     let sdk = match context.auv2_sdk {
         Some(ref sdk) if context.os == "macos" => {
@@ -189,15 +192,15 @@ fn build_auv2(context: &BuildContext) {
 
     run_cached(format_args!("auv2-{}", sdk.display()), |dir| {
         let mut cc = cc::Build::new();
-        cc.cpp(true).std("c++17");
+        cc.cpp(true).std("c++20"); //latest AudioUnitSDK requires C++20
         cc.flag_if_supported("-fno-char8_t");
         cc.out_dir(dir);
 
-        cc.include("src/cpp");
-        cc.include("clap/include");
-        cc.include("clap-wrapper/include");
-        cc.include("clap-wrapper/libs/fmt");
-        cc.include("clap-wrapper/src");
+        cc.include("./src/cpp");
+        cc.include("./external/clap/include");
+        cc.include("./external/clap-wrapper/include");
+        cc.include("./external/clap-wrapper/libs/fmt");
+        cc.include("./external/clap-wrapper/src");
         cc.include(sdk.join("include"));
 
         cc.define("CLAP_WRAPPER_VERSION", Some("\"0.11.0\""));
@@ -227,23 +230,27 @@ fn build_auv2(context: &BuildContext) {
 
         // clap wrapper shared
         cc.files([
-            "clap-wrapper/src/clap_proxy.cpp",
-            "clap-wrapper/src/detail/clap/fsutil.cpp",
-            "clap-wrapper/src/detail/shared/sha1.cpp",
+            "./external/clap-wrapper/src/clap_proxy.cpp",
+            "./external/clap-wrapper/src/detail/clap/fsutil.cpp",
+            "./external/clap-wrapper/src/detail/shared/sha1.cpp",
         ]);
 
         // clap auv2 wrapper
         cc.files([
-            "clap-wrapper/src/wrapasauv2.cpp",
-            "clap-wrapper/src/detail/auv2/auv2_shared.mm",
-            "clap-wrapper/src/detail/auv2/process.cpp",
-            "clap-wrapper/src/detail/auv2/wrappedview.mm",
-            "clap-wrapper/src/detail/auv2/parameter.cpp",
+            "./external/clap-wrapper/src/wrapasauv2.cpp",
+            "./external/clap-wrapper/src/detail/auv2/auv2_shared.mm",
+            "./external/clap-wrapper/src/detail/auv2/process.cpp",
+            "./external/clap-wrapper/src/detail/auv2/wrappedview.mm",
+            "./external/clap-wrapper/src/detail/auv2/parameter.cpp",
         ]);
 
-        cc.file("clap-wrapper/src/detail/os/macos.mm");
-        cc.file("clap-wrapper/src/detail/clap/mac_helpers.mm");
-        cc.define("MACOS_USE_STD_FILESYSTEM", None); //FIXME: this makes the minimum macos version 10.15
+        cc.file("./external/clap-wrapper/src/detail/os/macos.mm");
+        cc.file("./external/clap-wrapper/src/detail/clap/mac_helpers.mm");
+
+        // TODO: test on macos below 10.15
+        cc.define("MACOS_USE_GHC_FILESYSTEM", None);
+        cc.include("./external/filesystem/include");
+
         cc.define("MAC", None);
 
         println!("cargo:rustc-link-lib=framework=Foundation");
