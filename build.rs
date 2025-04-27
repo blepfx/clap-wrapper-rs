@@ -189,7 +189,7 @@ fn build_auv2(context: &BuildContext) {
 
     run_cached(format_args!("auv2-{}", sdk.display()), |dir| {
         let mut cc = cc::Build::new();
-        cc.cpp(true).std("c++20");
+        cc.cpp(true).std("c++17");
         cc.flag_if_supported("-fno-char8_t");
         cc.out_dir(dir);
 
