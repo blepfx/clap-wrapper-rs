@@ -8,7 +8,7 @@ An easy way to use [clap-wrapper](https://github.com/free-audio/clap-wrapper) in
 - Provides a simple way to export Rust-based CLAP plugins as VST3 and AUv2 plugins.
 - Builds "fat", self-contained binaries for VST3 and AUv2 plugins.
 - Does not use `cmake`. Instead it uses the `cc` crate to compile the `clap-wrapper` code.
-- Tested on Linux (Ubuntu 22.04), MacOS (13.7) and Windows (10). In theory the minimum supported OSX version is 10.11, but I have no way to test that.
+- Tested on Linux (Ubuntu 22.04), MacOS (13.7) and Windows (10). In theory the minimum supported OSX version is 10.12, but I have no way to test that.
 
 ## Limitations
 - Currently only supports VST3 and AUv2 plugins. Standalone builds are not supported yet.
