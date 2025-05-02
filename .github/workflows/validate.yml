@@ -52,7 +52,7 @@ jobs:
         with:
           name: ${{ matrix.package }}-${{ matrix.runner }}-vst3
           path: ${{ matrix.package }}.vst3
-          retention-days: 1
+          retention-days: 30
 
       - name: Build `vst3-validator`
         shell: bash
@@ -113,7 +113,7 @@ jobs:
         with:
           name: ${{ matrix.package }}-${{ matrix.runner }}-vst3
           path: ${{ matrix.package }}.vst3
-          retention-days: 1
+          retention-days: 30
 
       - name: Build `vst3-validator`
         shell: bash
@@ -196,14 +196,14 @@ jobs:
         with:
           name: ${{ matrix.package }}-${{ matrix.runner }}-auv2
           path: ${{ matrix.package }}.component
-          retention-days: 1
+          retention-days: 30
 
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.package }}-${{ matrix.runner }}-vst3
           path: ${{ matrix.package }}.vst3
-          retention-days: 1
+          retention-days: 30
 
       - name: Build `vst3-validator`
         shell: bash
