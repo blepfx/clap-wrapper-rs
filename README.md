@@ -26,7 +26,10 @@ clap-wrapper = { git = "https://github.com/blepfx/clap-wrapper-rs" }
     
 Then, in your `lib.rs`:
 ```rust
-clap_wrapper::export!();
+// exports `GetPluginFactoryAUV2` symbol if CLAP_WRAPPER_AUV2_SDK env variable is present
+clap_wrapper::export_auv2!(); 
+// exports `GetPluginFactory` symbol and extra VST3 symbols if CLAP_WRAPPER_VST3_SDK env variable is present
+clap_wrapper::export_vst3!(); 
 ```
 
 This will export VST3 and AUv2 entrypoints that use the `clap_entry` symbol exported from your crate (as an example, `nih_plug::nih_export_clap` exports it).

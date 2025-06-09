@@ -176,4 +176,5 @@ impl Vst3Plugin for Gain {
 }
 
 nih_export_clap!(Gain);
-clap_wrapper::export!();
+clap_wrapper::export_auv2!();
+clap_wrapper::export_vst3!();

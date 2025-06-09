@@ -19,10 +19,16 @@ pub mod auv2;
 pub mod auv2 {}
 
 #[macro_export]
-macro_rules! export {
+macro_rules! export_auv2 {
     () => {
         #[allow(unused_imports)]
         pub use $crate::auv2::*;
+    };
+}
+
+#[macro_export]
+macro_rules! export_vst3 {
+    () => {
         #[allow(unused_imports)]
         pub use $crate::vst3::*;
     };
