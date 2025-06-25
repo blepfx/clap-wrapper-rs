@@ -618,7 +618,7 @@ source = "git+https://github.com/micahrj/clap-sys.git?rev=25d7f53fdb6363ad63fbd8
 
 [[package]]
 name = "clap-wrapper"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "cc",
  "stdio-override",
