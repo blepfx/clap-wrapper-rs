@@ -12,7 +12,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
+clap-wrapper = { path = "../.." }
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", rev = "400eb3156f221073fbcaf95607b56842272d134b" }
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git", rev = "400eb3156f221073fbcaf95607b56842272d134b" }
 atomic_float = "1.1"
-clap-wrapper = { path = "../.." }
