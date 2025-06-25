@@ -22,7 +22,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clap-wrapper = "0.1.0"
+clap-wrapper = "0.1.1"
 ```
     
 Then, in your `lib.rs`:
