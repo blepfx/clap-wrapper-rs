@@ -18,5 +18,9 @@ description = "An easy way to use clap-wrapper in your audio plugins!"
 keywords = ["vst3", "auv2", "clap", "audio", "plugin"]
 
 [build-dependencies]
-cc = { version = "1.2.19", features = ["parallel"] }
+cc = "1.2.19"
 stdio-override = "0.2.0"
+
+[features]
+default = ["parallel"]
+parallel = ["cc/parallel"]

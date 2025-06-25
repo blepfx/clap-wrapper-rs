@@ -1,6 +1,7 @@
 # clap-wrapper-rs
 
 [![Validate](https://github.com/blepfx/clap-wrapper-rs/actions/workflows/validate.yml/badge.svg)](https://github.com/blepfx/clap-wrapper-rs/actions/workflows/validate.yml)
+[![Crates](https://img.shields.io/crates/v/clap-wrapper)](https://crates.io/crates/clap-wrapper)
 
 An easy way to use [clap-wrapper](https://github.com/free-audio/clap-wrapper) in your Rust plugins!
 
@@ -21,7 +22,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clap-wrapper = { git = "https://github.com/blepfx/clap-wrapper-rs" }
+clap-wrapper = "0.1.0"
 ```
     
 Then, in your `lib.rs`:
