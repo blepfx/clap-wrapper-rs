@@ -92,7 +92,6 @@ fn build_vst3(context: &BuildContext) {
                 "public.sdk/source/main/moduleinit.cpp",
                 "public.sdk/source/vst/vstinitiids.cpp",
                 "public.sdk/source/vst/vstnoteexpressiontypes.cpp",
-                "public.sdk/source/vst/vstsinglecomponenteffect.cpp",
                 "public.sdk/source/vst/vstaudioeffect.cpp",
                 "public.sdk/source/vst/vstcomponent.cpp",
                 "public.sdk/source/vst/vstsinglecomponenteffect.cpp",
