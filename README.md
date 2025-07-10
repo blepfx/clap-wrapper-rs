@@ -5,6 +5,11 @@
 
 An easy way to use [clap-wrapper](https://github.com/free-audio/clap-wrapper) in your Rust plugins!
 
+## Usecases
+- Adding VST3 or AUv2 support to existing Rust plugin frameworks that do not support them
+- Using [nih-plug](https://github.com/robbert-vdh/nih-plug) with non-GPLv3 licensed VST3 SDK
+- Making your own audio plugin framework without dealing with VST3 and AUv2 directly
+
 ## Features
 - Provides a simple way to export Rust-based CLAP plugins as VST3 and AUv2 plugins.
 - Builds "fat", self-contained binaries for VST3 and AUv2 plugins.
