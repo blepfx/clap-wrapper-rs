@@ -62,6 +62,7 @@ fn build_vst3(context: &BuildContext) {
         cc.include("./external/clap/include");
         cc.include("./external/clap-wrapper/include");
         cc.include("./external/clap-wrapper/libs/fmt");
+        cc.include("./external/clap-wrapper/libs/psl");
         cc.include("./external/clap-wrapper/src");
         cc.include(&sdk);
         cc.include(sdk.join("public.sdk"));
