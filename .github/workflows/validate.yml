@@ -21,17 +21,6 @@ jobs:
         with:
             submodules: recursive
 
-      - name: Checkout `vst3sdk`
-        shell: bash
-        run: |
-            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
-            cd vst3sdk
-            git submodule update --init base
-            git submodule update --init cmake
-            git submodule update --init public.sdk
-            git submodule update --init pluginterfaces
-            cd ..
-
       - name: Install dependencies
         shell: bash
         run: |
@@ -41,7 +30,7 @@ jobs:
       - name: Build `${{ matrix.package }}`
         shell: bash
         run: |
-            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_VERBOSE=1 cargo build -p ${{ matrix.package }}
+            cargo build -p ${{ matrix.package }}
             
             # bundle vst3
             mkdir -p ${{ matrix.package }}.vst3/Contents/x86_64-linux/
@@ -57,7 +46,12 @@ jobs:
       - name: Build `vst3-validator`
         shell: bash
         run: |
+            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
             cd vst3sdk
+            git submodule update --init base
+            git submodule update --init cmake
+            git submodule update --init public.sdk
+            git submodule update --init pluginterfaces
             cmake -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -B cmake-build 
             cmake --build cmake-build --target validator
             cd ..
@@ -86,21 +80,10 @@ jobs:
         with:
             submodules: recursive
 
-      - name: Checkout `vst3sdk`
-        shell: bash
-        run: |
-            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
-            cd vst3sdk
-            git submodule update --init base
-            git submodule update --init cmake
-            git submodule update --init public.sdk
-            git submodule update --init pluginterfaces
-            cd ..
-
       - name: Build `${{ matrix.package }}`
         shell: bash
         run: |
-            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_VERBOSE=1 cargo build -p ${{ matrix.package }}
+            cargo build -p ${{ matrix.package }}
 
             # bundle vst3. we dont really have to do that as the dll file by itself can be used as a vst3, 
             # but the validator really wants it to be a vst3 bundle so we have no choice
@@ -118,8 +101,13 @@ jobs:
       - name: Build `vst3-validator`
         shell: bash
         run: |
+            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
             cd vst3sdk
-            cmake -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -B cmake-build
+            git submodule update --init base
+            git submodule update --init cmake
+            git submodule update --init public.sdk
+            git submodule update --init pluginterfaces
+            cmake -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -B cmake-build 
             cmake --build cmake-build --target validator
             cd ..
 
@@ -153,17 +141,6 @@ jobs:
         with:
             submodules: recursive
 
-      - name: Checkout `vst3sdk`
-        shell: bash
-        run: |
-            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
-            cd vst3sdk
-            git submodule update --init base
-            git submodule update --init cmake
-            git submodule update --init public.sdk
-            git submodule update --init pluginterfaces
-            cd ..
-
       - name: Checkout `AudioUnitSDK`
         shell: bash
         run: |
@@ -172,7 +149,7 @@ jobs:
       - name: Build `${{ matrix.package }}`
         shell: bash
         run: |
-            CLAP_WRAPPER_VST3_SDK="$(realpath vst3sdk)" CLAP_WRAPPER_AUV2_SDK="$(realpath AudioUnitSDK)" CLAP_WRAPPER_VERBOSE=1 cargo build -p ${{ matrix.package }}
+            cargo build -p ${{ matrix.package }}
             
             # bundle vst3 and include the Info.plist stuff
             # for more info on directory structure, see https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Format.html
@@ -208,8 +185,13 @@ jobs:
       - name: Build `vst3-validator`
         shell: bash
         run: |
+            git clone --depth=1 https://github.com/steinbergmedia/vst3sdk
             cd vst3sdk
-            cmake -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -B cmake-build
+            git submodule update --init base
+            git submodule update --init cmake
+            git submodule update --init public.sdk
+            git submodule update --init pluginterfaces
+            cmake -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -B cmake-build 
             cmake --build cmake-build --target validator
             cd ..
 

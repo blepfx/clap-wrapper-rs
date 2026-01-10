@@ -3,24 +3,10 @@ resolver = "3"
 members = [ 
     ".", 
     "examples/example-clack",
-    "examples/example-nih-plug"
+    "examples/example-nih-plug",
+    "./clap-wrapper-vst3",
+    "./clap-wrapper-auv2"
 ]
 
-[package]
-name = "clap-wrapper"
-version = "0.1.2"
-edition = "2024"
-authors = ["Quant1um"]
-readme = "README.md"
-repository = "https://github.com/blepfx/clap-wrapper-rs"
-license = "MIT OR Apache-2.0"
-description = "An easy way to use clap-wrapper in your audio plugins!"
-keywords = ["vst3", "auv2", "clap", "audio", "plugin"]
-
-[build-dependencies]
-cc = "1.2.19"
-stdio-override = "0.2.0"
-
-[features]
-default = ["parallel"]
-parallel = ["cc/parallel"]
+[workspace.dependencies]
+cc = "1.2.52"
