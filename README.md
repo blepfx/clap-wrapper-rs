@@ -6,8 +6,7 @@
 An easy way to use [clap-wrapper](https://github.com/free-audio/clap-wrapper) in your Rust plugins!
 
 ## Usecases
-- Adding VST3 or AUv2 support to existing Rust plugin frameworks that do not support them
-- Using [nih-plug](https://github.com/robbert-vdh/nih-plug) with non-GPLv3 licensed VST3 SDK
+- Adding VST3 or AUv2 support to existing Rust plugin frameworks that do not support them (e.g. [clack](https://github.com/prokopyl/clack))
 - Making your own audio plugin framework without dealing with VST3 and AUv2 directly
 
 ## Features
@@ -27,24 +26,19 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clap-wrapper = "0.1.2"
+clap-wrapper-vst3 = "0.2.0" # not available on crates.io yet
+clap-wrapper-auv2 = "0.2.0" # not available on crates.io yet
 ```
     
 Then, in your `lib.rs`:
 ```rust
-// exports `GetPluginFactoryAUV2` symbol if CLAP_WRAPPER_AUV2_SDK env variable is present
-clap_wrapper::export_auv2!(); 
-// exports `GetPluginFactory` symbol and extra VST3 symbols if CLAP_WRAPPER_VST3_SDK env variable is present
-clap_wrapper::export_vst3!(); 
+// exports `GetPluginFactoryAUV2` symbol.
+clap_wrapper_auv2::export!(); 
+// exports `GetPluginFactory` symbol and extra VST3 symbols.
+clap_wrapper_vst3::export!(); 
 ```
 
 This will export VST3 and AUv2 entrypoints that use the `clap_entry` symbol exported from your crate (as an example, `nih_plug::nih_export_clap` exports it).
-
-To build the plugin with VST3 or AUv2 capabilities, add `CLAP_WRAPPER_VST3_SDK` and/or `CLAP_WRAPPER_AUV2_SDK` environment variables to your build command. For example:
-
-```bash
-CLAP_WRAPPER_VST3_SDK=/path/to/vst3sdk cargo build -p example-clap
-```
 
 Keep in mind, that `clap-wrapper-rs` only adds the necessary entrypoints that reexport the CLAP plugin you already have. You'd still have to use a crate like `nih-plug` to actually create the plugin.
 
