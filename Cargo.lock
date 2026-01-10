@@ -619,14 +619,14 @@ source = "git+https://github.com/micahrj/clap-sys.git?rev=25d7f53fdb6363ad63fbd8
 
 [[package]]
 name = "clap-wrapper-auv2"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "cc",
 ]
 
 [[package]]
 name = "clap-wrapper-vst3"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "cc",
 ]
