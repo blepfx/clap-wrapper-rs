@@ -32,6 +32,10 @@ pub mod auv2 {
     }
 }
 
+#[cfg(not(all(target_os = "macos", feature = "auv2")))]
+#[doc(hidden)]
+pub mod auv2 {}
+
 #[cfg(feature = "vst3")]
 #[doc(hidden)]
 pub mod vst3 {
@@ -102,10 +106,6 @@ pub mod vst3 {
         unsafe { clap_wrapper_ExitDll() }
     }
 }
-
-#[cfg(not(all(target_os = "macos", feature = "auv2")))]
-#[doc(hidden)]
-pub mod auv2 {}
 
 #[cfg(not(feature = "vst3"))]
 #[doc(hidden)]
