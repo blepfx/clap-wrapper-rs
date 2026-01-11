@@ -135,7 +135,7 @@ fn build_auv2(debug: bool) {
     cc.cpp(true).std("c++20"); //AudioUnitSDK requires C++20
     cc.flag_if_supported("-fno-char8_t");
 
-    cc.include("./src/cpp");
+    cc.include("./src/auv2-cpp");
     cc.include("./external/clap/include");
     cc.include("./external/clap-wrapper/include");
     cc.include("./external/clap-wrapper/libs/fmt");
