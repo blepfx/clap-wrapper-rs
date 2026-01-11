@@ -51,6 +51,8 @@ See [validate.yml](.github/workflows/validate.yml) for a complete example of how
 
 ## Changelog
 
+- 0.2.1:
+    - Added documentation
 - 0.2.0:
     - Embedded VST3 and AUv2 SDKs directly into the crate, removing the need to download them separately. This is possible thanks to VST3 SDK's new MIT license. 
     - Added `vst3` and `auv2` features to enable/disable building those wrappers.

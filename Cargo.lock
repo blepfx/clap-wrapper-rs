@@ -619,7 +619,7 @@ source = "git+https://github.com/micahrj/clap-sys.git?rev=25d7f53fdb6363ad63fbd8
 
 [[package]]
 name = "clap-wrapper"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "cc",
 ]
