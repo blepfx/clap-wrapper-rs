@@ -6,8 +6,7 @@
 An easy way to use [clap-wrapper](https://github.com/free-audio/clap-wrapper) in your Rust plugins!
 
 ## Usecases
-- Adding VST3 or AUv2 support to existing Rust plugin frameworks that do not support them
-- Using [nih-plug](https://github.com/robbert-vdh/nih-plug) with non-GPLv3 licensed VST3 SDK
+- Adding VST3 or AUv2 support to existing Rust plugin frameworks that do not support them (e.g. [clack](https://github.com/prokopyl/clack))
 - Making your own audio plugin framework without dealing with VST3 and AUv2 directly
 
 ## Features
@@ -27,24 +26,18 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clap-wrapper = "0.1.2"
+clap-wrapper = { version = "0.2.0", features = ["vst3", "auv2", "parallel"] } # these features are enabled by default
 ```
     
 Then, in your `lib.rs`:
 ```rust
-// exports `GetPluginFactoryAUV2` symbol if CLAP_WRAPPER_AUV2_SDK env variable is present
+// exports `GetPluginFactoryAUV2` symbol.
 clap_wrapper::export_auv2!(); 
-// exports `GetPluginFactory` symbol and extra VST3 symbols if CLAP_WRAPPER_VST3_SDK env variable is present
+// exports `GetPluginFactory` symbol and extra VST3 symbols.
 clap_wrapper::export_vst3!(); 
 ```
 
 This will export VST3 and AUv2 entrypoints that use the `clap_entry` symbol exported from your crate (as an example, `nih_plug::nih_export_clap` exports it).
-
-To build the plugin with VST3 or AUv2 capabilities, add `CLAP_WRAPPER_VST3_SDK` and/or `CLAP_WRAPPER_AUV2_SDK` environment variables to your build command. For example:
-
-```bash
-CLAP_WRAPPER_VST3_SDK=/path/to/vst3sdk cargo build -p example-clap
-```
 
 Keep in mind, that `clap-wrapper-rs` only adds the necessary entrypoints that reexport the CLAP plugin you already have. You'd still have to use a crate like `nih-plug` to actually create the plugin.
 
@@ -55,6 +48,15 @@ Check out [Info.vst3.plist](examples/example-clack/Info.vst3.plist) and [Info.au
 
 
 See [validate.yml](.github/workflows/validate.yml) for a complete example of how to build, bundle and validate a plugin.
+
+## Changelog
+
+- 0.2.0:
+    - Embedded VST3 and AUv2 SDKs directly into the crate, removing the need to download them separately. This is possible thanks to VST3 SDK's new MIT license. 
+    - Added `vst3` and `auv2` features to enable/disable building those wrappers.
+    - Simplified build.rs by a lot.
+- 0.1.2:
+    - Updated `clap-wrapper` to latest.
 
 ## License
 

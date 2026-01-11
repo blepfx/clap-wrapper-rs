@@ -232,5 +232,5 @@ pub struct PolySynthPluginMainThread<'a> {
 impl<'a> PluginMainThread<'a, PolySynthPluginShared> for PolySynthPluginMainThread<'a> {}
 
 clack_export_entry!(SinglePluginEntry<PolySynthPlugin>);
-clap_wrapper::export_auv2!();
 clap_wrapper::export_vst3!();
+clap_wrapper::export_auv2!();

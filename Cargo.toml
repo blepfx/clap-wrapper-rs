@@ -3,12 +3,12 @@ resolver = "3"
 members = [ 
     ".", 
     "examples/example-clack",
-    "examples/example-nih-plug"
+    "examples/example-nih-plug",
 ]
 
 [package]
 name = "clap-wrapper"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2024"
 authors = ["Quant1um"]
 readme = "README.md"
@@ -17,10 +17,33 @@ license = "MIT OR Apache-2.0"
 description = "An easy way to use clap-wrapper in your audio plugins!"
 keywords = ["vst3", "auv2", "clap", "audio", "plugin"]
 
+include = [
+    "src/**",
+    "build.rs",
+    "./README.md",
+
+    # Include external dependency licenses, just in case
+    "LICENSE*",
+
+    "external/clap/include/**",
+    "external/clap-wrapper/include/**",
+    "external/clap-wrapper/libs/**",
+    "external/clap-wrapper/src/**",
+    "external/filesystem/include/**",
+
+    "external/AudioUnitSDK/include/**",
+    "external/AudioUnitSDK/src/**", 
+
+    "external/vst3sdk/pluginterfaces/**",
+    "external/vst3sdk/public.sdk/source/**",
+    "external/vst3sdk/base/**",
+]
+
 [build-dependencies]
-cc = "1.2.19"
-stdio-override = "0.2.0"
+cc = "1.2.52"
 
 [features]
-default = ["parallel"]
+default = ["parallel", "vst3", "auv2"]
 parallel = ["cc/parallel"]
+vst3 = []
+auv2 = []

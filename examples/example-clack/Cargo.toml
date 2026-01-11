@@ -2,7 +2,6 @@
 name = "example-clack"
 version = "0.1.0"
 edition = "2024"
-
 license = "MIT OR Apache-2.0"
 publish = false
 
@@ -10,6 +9,6 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
+clap-wrapper= { path = "../.." }
 clack-plugin = { git = "https://github.com/prokopyl/clack", rev = "5deaa1be9b5af7078d75cbe54abefee12ed40f63" }
 clack-extensions = { git = "https://github.com/prokopyl/clack", rev = "5deaa1be9b5af7078d75cbe54abefee12ed40f63", features = ["audio-ports", "clack-plugin", "note-ports", "params", "state"] }
-clap-wrapper = { path = "../.." }
