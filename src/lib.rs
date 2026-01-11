@@ -1,3 +1,9 @@
+#![doc = include_str!("../README.md")]
+
+/// Exports an AUv2 entrypoint named `GetPluginFactoryAUV2` that wraps a global CLAP entrypoint (`clap_entry`) exported from the resulting shared library.
+/// Currently it only reexports the first plugin available through the CLAP entrypoint, but this limitation might be lifted in the future.
+///
+/// Failure to export a CLAP entrypoint might result in linker errors or missing symbols.
 #[macro_export]
 macro_rules! export_vst3 {
     () => {
@@ -6,6 +12,9 @@ macro_rules! export_vst3 {
     };
 }
 
+/// Exports a VST3 entrypoint named `GetPluginFactory` that wraps a global CLAP entrypoint (`clap_entry`) exported from the resulting shared library.
+///
+/// Failure to export a CLAP entrypoint might result in linker errors or missing symbols.
 #[macro_export]
 macro_rules! export_auv2 {
     () => {

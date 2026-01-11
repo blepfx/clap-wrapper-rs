@@ -13,6 +13,7 @@ edition = "2024"
 authors = ["Quant1um"]
 readme = "README.md"
 repository = "https://github.com/blepfx/clap-wrapper-rs"
+documentation = "https://docs.rs/clap-wrapper"
 license = "MIT OR Apache-2.0"
 description = "An easy way to use clap-wrapper in your audio plugins!"
 keywords = ["vst3", "auv2", "clap", "audio", "plugin"]
