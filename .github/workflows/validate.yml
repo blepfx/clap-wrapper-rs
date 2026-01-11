@@ -27,11 +27,11 @@ jobs:
             # needed for baseview and other example-nih-plug deps
             sudo apt-get install -y libgl-dev libx11-xcb-dev libxcb1-dev libxcb-dri2-0-dev libxcb-icccm4-dev libxcursor-dev libxkbcommon-dev libxcb-shape0-dev libxcb-xfixes0-dev
 
-      - name: Package `clap-wrapper` crates
+      - name: Package `clap-wrapper`
         shell: bash
         run: |
-            # we test the packaged versions to make sure everything needed is included
-            cargo package -p clap-wrapper-vst3
+            # we test the packaged version to make sure everything needed is included
+            cargo package -p clap-wrapper
 
       - name: Build `${{ matrix.package }}`
         shell: bash
@@ -86,11 +86,11 @@ jobs:
         with:
             submodules: recursive
 
-      - name: Package `clap-wrapper` crates
+      - name: Package `clap-wrapper`
         shell: bash
         run: |
-            # we test the packaged versions to make sure everything needed is included
-            cargo package -p clap-wrapper-vst3
+            # we test the packaged version to make sure everything needed is included
+            cargo package -p clap-wrapper
 
       - name: Build `${{ matrix.package }}`
         shell: bash
@@ -153,12 +153,11 @@ jobs:
         with:
             submodules: recursive
 
-      - name: Package `clap-wrapper` crates
+      - name: Package `clap-wrapper`
         shell: bash
         run: |
-            # we test the packaged versions to make sure everything needed is included
-            cargo package -p clap-wrapper-auv2
-            cargo package -p clap-wrapper-vst3
+            # we test the packaged version to make sure everything needed is included
+            cargo package -p clap-wrapper
 
       - name: Build `${{ matrix.package }}`
         shell: bash

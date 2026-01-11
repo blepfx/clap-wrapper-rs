@@ -17,6 +17,28 @@ license = "MIT OR Apache-2.0"
 description = "An easy way to use clap-wrapper in your audio plugins!"
 keywords = ["vst3", "auv2", "clap", "audio", "plugin"]
 
+include = [
+    "src/**",
+    "build.rs",
+    "./README.md",
+
+    # Include external dependency licenses, just in case
+    "LICENSE*",
+
+    "external/clap/include/**",
+    "external/clap-wrapper/include/**",
+    "external/clap-wrapper/libs/**",
+    "external/clap-wrapper/src/**",
+    "external/filesystem/include/**",
+
+    "external/AudioUnitSDK/include/**",
+    "external/AudioUnitSDK/src/**", 
+
+    "external/vst3sdk/pluginterfaces/**",
+    "external/vst3sdk/public.sdk/source/**",
+    "external/vst3sdk/base/**",
+]
+
 [build-dependencies]
 cc = "1.2.52"
 
