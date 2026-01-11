@@ -618,14 +618,7 @@ version = "0.5.0"
 source = "git+https://github.com/micahrj/clap-sys.git?rev=25d7f53fdb6363ad63fbd80049cb7a42a97ac156#25d7f53fdb6363ad63fbd80049cb7a42a97ac156"
 
 [[package]]
-name = "clap-wrapper-auv2"
-version = "0.2.0"
-dependencies = [
- "cc",
-]
-
-[[package]]
-name = "clap-wrapper-vst3"
+name = "clap-wrapper"
 version = "0.2.0"
 dependencies = [
  "cc",
@@ -1041,8 +1034,7 @@ version = "0.1.0"
 dependencies = [
  "clack-extensions",
  "clack-plugin",
- "clap-wrapper-auv2",
- "clap-wrapper-vst3",
+ "clap-wrapper",
 ]
 
 [[package]]
@@ -1050,8 +1042,7 @@ name = "example-nih-plug"
 version = "0.1.0"
 dependencies = [
  "atomic_float 1.1.0",
- "clap-wrapper-auv2",
- "clap-wrapper-vst3",
+ "clap-wrapper",
  "nih_plug",
  "nih_plug_vizia",
 ]

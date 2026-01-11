@@ -4,9 +4,24 @@ members = [
     ".", 
     "examples/example-clack",
     "examples/example-nih-plug",
-    "./clap-wrapper-vst3",
-    "./clap-wrapper-auv2"
 ]
 
-[workspace.dependencies]
+[package]
+name = "clap-wrapper"
+version = "0.2.0"
+edition = "2024"
+authors = ["Quant1um"]
+readme = "README.md"
+repository = "https://github.com/blepfx/clap-wrapper-rs"
+license = "MIT OR Apache-2.0"
+description = "An easy way to use clap-wrapper in your audio plugins!"
+keywords = ["vst3", "auv2", "clap", "audio", "plugin"]
+
+[build-dependencies]
 cc = "1.2.52"
+
+[features]
+default = ["parallel", "vst3", "auv2"]
+parallel = ["cc/parallel"]
+vst3 = []
+auv2 = []

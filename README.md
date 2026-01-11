@@ -26,16 +26,15 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clap-wrapper-vst3 = "0.2.0" # not available on crates.io yet
-clap-wrapper-auv2 = "0.2.0" # not available on crates.io yet
+clap-wrapper = { version = "0.2.0", features = ["vst3", "auv2", "parallel"] } # these features are enabled by default
 ```
     
 Then, in your `lib.rs`:
 ```rust
 // exports `GetPluginFactoryAUV2` symbol.
-clap_wrapper_auv2::export!(); 
+clap_wrapper::export_auv2!(); 
 // exports `GetPluginFactory` symbol and extra VST3 symbols.
-clap_wrapper_vst3::export!(); 
+clap_wrapper::export_vst3!(); 
 ```
 
 This will export VST3 and AUv2 entrypoints that use the `clap_entry` symbol exported from your crate (as an example, `nih_plug::nih_export_clap` exports it).
@@ -49,6 +48,15 @@ Check out [Info.vst3.plist](examples/example-clack/Info.vst3.plist) and [Info.au
 
 
 See [validate.yml](.github/workflows/validate.yml) for a complete example of how to build, bundle and validate a plugin.
+
+## Changelog
+
+- 0.2.0:
+    - Embed VST3 and AUv2 SDKs directly into the crate, removing the need to download them separately. This is possible thanks to VST3 SDK's new MIT license. 
+    - Added `vst3` and `auv2` features to enable/disable building those wrappers.
+    - Simplified build.rs by a lot.
+- 0.1.2:
+    - Updated `clap-wrapper` to latest.
 
 ## License
 

@@ -1,11 +1,21 @@
-use std::path::PathBuf;
+use std::path::{PathBuf, absolute};
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     let os = std::env::var("CARGO_CFG_TARGET_OS").unwrap();
-    let debug = std::env::var("DEBUG").unwrap_or_default() == "true";
+    let debug = std::env::var("DEBUG").unwrap() == "true";
 
+    if cfg!(feature = "vst3") {
+        build_vst3(&os, debug);
+    }
+
+    if cfg!(feature = "auv2") && os == "macos" {
+        build_auv2(debug);
+    }
+}
+
+fn build_vst3(os: &str, debug: bool) {
     let mut cc = cc::Build::new();
     cc.cpp(true).std("c++17");
 
@@ -82,7 +92,7 @@ fn main() {
         cc.define("RELEASE", Some("1"));
     }
 
-    match os.as_str() {
+    match os {
         "macos" => {
             cc.file("./external/vst3sdk/public.sdk/source/main/macmain.cpp");
             cc.file("./external/clap-wrapper/src/detail/os/macos.mm");
@@ -118,8 +128,80 @@ fn main() {
 
     cc.try_compile("clap_wrapper_vst3")
         .unwrap_or_else(|e| panic!("failed to compile clap-wrapper (vst3): {}", e));
+}
 
-    println!("cargo:rustc-cfg=clap_wrapper_vst3");
+fn build_auv2(debug: bool) {
+    let mut cc = cc::Build::new();
+    cc.cpp(true).std("c++20"); //AudioUnitSDK requires C++20
+    cc.flag_if_supported("-fno-char8_t");
+
+    cc.include("./src/cpp");
+    cc.include("./external/clap/include");
+    cc.include("./external/clap-wrapper/include");
+    cc.include("./external/clap-wrapper/libs/fmt");
+    cc.include("./external/clap-wrapper/src");
+    cc.include("./external/AudioUnitSDK/include");
+
+    cc.define("CLAP_WRAPPER_VERSION", Some("\"0.11.0\""));
+    cc.define("CLAP_WRAPPER_BUILD_AUV2", Some("1"));
+    cc.define("STATICALLY_LINKED_CLAP_ENTRY", Some("1"));
+    cc.define("DICTIONARY_STREAM_FORMAT_WRAPPER", Some("1"));
+
+    // auv2 sdk
+    cc.files([
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUBase.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUBuffer.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUBufferAllocator.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUEffectBase.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUMIDIBase.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUMIDIEffectBase.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUInputElement.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUOutputElement.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUScopeElement.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/AUPlugInDispatch.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/ComponentBase.cpp",
+        "./external/AudioUnitSDK/src/AudioUnitSDK/MusicDeviceBase.cpp",
+    ]);
+
+    // clap wrapper shared
+    cc.files([
+        "./external/clap-wrapper/src/clap_proxy.cpp",
+        "./external/clap-wrapper/src/detail/clap/fsutil.cpp",
+        "./external/clap-wrapper/src/detail/shared/sha1.cpp",
+    ]);
+
+    // clap auv2 wrapper
+    cc.files([
+        "./external/clap-wrapper/src/wrapasauv2.cpp",
+        "./external/clap-wrapper/src/detail/auv2/auv2_shared.mm",
+        "./external/clap-wrapper/src/detail/auv2/process.cpp",
+        "./external/clap-wrapper/src/detail/auv2/wrappedview.mm",
+        "./external/clap-wrapper/src/detail/auv2/parameter.cpp",
+    ]);
+
+    cc.file("./external/clap-wrapper/src/detail/os/macos.mm");
+    cc.file("./external/clap-wrapper/src/detail/clap/mac_helpers.mm");
+
+    // TODO: test on macos below 10.15
+    cc.define("MACOS_USE_GHC_FILESYSTEM", None);
+    cc.include("./external/filesystem/include");
+
+    cc.define("MAC", None);
+
+    println!("cargo:rustc-link-lib=framework=Foundation");
+    println!("cargo:rustc-link-lib=framework=CoreFoundation");
+    println!("cargo:rustc-link-lib=framework=AudioToolbox");
+    println!("cargo:rustc-link-lib=framework=CoreMIDI");
+    println!("cargo:rustc-link-lib=framework=AppKit");
+
+    if debug {
+        cc.define("DEVELOPMENT", Some("1"));
+    } else {
+        cc.define("RELEASE", Some("1"));
+    }
+
+    cc.try_compile("clap_wrapper_auv2")
+        .unwrap_or_else(|e| panic!("failed to compile clap-wrapper (auv2): {}", e));
 }
 
 fn walk_files(dir: impl Into<PathBuf>, ext: &str) -> Vec<PathBuf> {
@@ -128,7 +210,12 @@ fn walk_files(dir: impl Into<PathBuf>, ext: &str) -> Vec<PathBuf> {
 
     stack.push(dir.into());
     while let Some(top) = stack.pop() {
-        for entry in std::fs::read_dir(&top).unwrap() {
+        for entry in std::fs::read_dir(&top).unwrap_or_else(|_| {
+            panic!(
+                "failed to list directory {:?}",
+                absolute(&top).unwrap_or(top.clone())
+            )
+        }) {
             let path = entry.unwrap().path();
             if path.is_dir() {
                 stack.push(path);
