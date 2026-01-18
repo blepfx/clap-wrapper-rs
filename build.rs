@@ -219,7 +219,7 @@ fn walk_files(dir: impl Into<PathBuf>, ext: &str) -> Vec<PathBuf> {
             let path = entry.unwrap().path();
             if path.is_dir() {
                 stack.push(path);
-            } else if path.extension().map_or(false, |e| e == ext) {
+            } else if path.extension().is_some_and(|e| e == ext) {
                 files.push(path);
             }
         }
