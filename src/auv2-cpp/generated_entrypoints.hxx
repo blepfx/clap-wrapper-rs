@@ -17,11 +17,16 @@ AUV2_Type typeFromAUInstance(AudioComponentInstance *ci)
     return AUV2_Type::aumu_musicdevice;
 }
 
-struct wrapAsAUV2_inst0 : free_audio::auv2_wrapper::WrapAsAUV2
-{
-    wrapAsAUV2_inst0(AudioComponentInstance ci) : free_audio::auv2_wrapper::WrapAsAUV2(typeFromAUInstance(&ci), "", "", 0, ci)
-    {
-    }
-};
+#define CLAP_AUV2_ENTRY(n)                                           \
+    struct wrapAsAUV2_inst##n : free_audio::auv2_wrapper::WrapAsAUV2 \
+    {                                                                \
+        wrapAsAUV2_inst##n(AudioComponentInstance ci)                \
+            : free_audio::auv2_wrapper::WrapAsAUV2(                  \
+                  typeFromAUInstance(&ci), "", "", n, ci) {}         \
+    };                                                               \
+    AUSDK_COMPONENT_ENTRY(ausdk::AUMusicDeviceFactory, wrapAsAUV2_inst##n);
 
-AUSDK_COMPONENT_ENTRY(ausdk::AUMusicDeviceFactory, wrapAsAUV2_inst0);
+CLAP_AUV2_ENTRY(0);
+CLAP_AUV2_ENTRY(1);
+CLAP_AUV2_ENTRY(2);
+CLAP_AUV2_ENTRY(3);

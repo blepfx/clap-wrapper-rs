@@ -26,18 +26,39 @@ macro_rules! export_auv2 {
 #[cfg(all(target_os = "macos", feature = "auv2"))]
 #[doc(hidden)]
 pub mod auv2 {
+    use core::ffi::c_void;
+
     #[link(name = "clap_wrapper_auv2")]
     unsafe extern "C" {
-        pub unsafe fn wrapAsAUV2_inst0Factory(
-            desc: *const core::ffi::c_void,
-        ) -> *mut core::ffi::c_void;
+        pub unsafe fn wrapAsAUV2_inst0Factory(desc: *const c_void) -> *mut c_void;
+        pub unsafe fn wrapAsAUV2_inst1Factory(desc: *const c_void) -> *mut c_void;
+        pub unsafe fn wrapAsAUV2_inst2Factory(desc: *const c_void) -> *mut c_void;
+        pub unsafe fn wrapAsAUV2_inst3Factory(desc: *const c_void) -> *mut c_void;
     }
 
     #[unsafe(no_mangle)]
-    pub unsafe extern "C" fn GetPluginFactoryAUV2(
-        desc: *const core::ffi::c_void,
-    ) -> *mut core::ffi::c_void {
+    pub unsafe extern "C" fn GetPluginFactoryAUV2(desc: *const c_void) -> *mut c_void {
         unsafe { wrapAsAUV2_inst0Factory(desc) }
+    }
+
+    #[unsafe(no_mangle)]
+    pub unsafe extern "C" fn GetPluginFactoryAUV2_0(desc: *const c_void) -> *mut c_void {
+        unsafe { wrapAsAUV2_inst0Factory(desc) }
+    }
+
+    #[unsafe(no_mangle)]
+    pub unsafe extern "C" fn GetPluginFactoryAUV2_1(desc: *const c_void) -> *mut c_void {
+        unsafe { wrapAsAUV2_inst1Factory(desc) }
+    }
+
+    #[unsafe(no_mangle)]
+    pub unsafe extern "C" fn GetPluginFactoryAUV2_2(desc: *const c_void) -> *mut c_void {
+        unsafe { wrapAsAUV2_inst2Factory(desc) }
+    }
+
+    #[unsafe(no_mangle)]
+    pub unsafe extern "C" fn GetPluginFactoryAUV2_3(desc: *const c_void) -> *mut c_void {
+        unsafe { wrapAsAUV2_inst3Factory(desc) }
     }
 }
 
@@ -48,22 +69,24 @@ pub mod auv2 {}
 #[cfg(feature = "vst3")]
 #[doc(hidden)]
 pub mod vst3 {
+    use core::ffi::c_void;
+
     #[link(name = "clap_wrapper_vst3")]
     unsafe extern "system" {
-        unsafe fn clap_wrapper_GetPluginFactory() -> *mut core::ffi::c_void;
+        unsafe fn clap_wrapper_GetPluginFactory() -> *mut c_void;
     }
 
     #[link(name = "clap_wrapper_vst3")]
     #[cfg(all(target_family = "unix", not(target_os = "macos")))]
     unsafe extern "C" {
-        unsafe fn clap_wrapper_ModuleEntry(lib_module: *mut core::ffi::c_void) -> bool;
+        unsafe fn clap_wrapper_ModuleEntry(lib_module: *mut c_void) -> bool;
         unsafe fn clap_wrapper_ModuleExit() -> bool;
     }
 
     #[link(name = "clap_wrapper_vst3")]
     #[cfg(target_os = "macos")]
     unsafe extern "C" {
-        unsafe fn clap_wrapper_bundleEntry(lib_module: *mut core::ffi::c_void) -> bool;
+        unsafe fn clap_wrapper_bundleEntry(lib_module: *mut c_void) -> bool;
         unsafe fn clap_wrapper_bundleExit() -> bool;
     }
 
@@ -75,13 +98,13 @@ pub mod vst3 {
     }
 
     #[unsafe(no_mangle)]
-    pub unsafe extern "system" fn GetPluginFactory() -> *mut core::ffi::c_void {
+    pub unsafe extern "system" fn GetPluginFactory() -> *mut c_void {
         unsafe { clap_wrapper_GetPluginFactory() }
     }
 
     #[unsafe(no_mangle)]
     #[cfg(all(target_family = "unix", not(target_os = "macos")))]
-    pub unsafe extern "C" fn ModuleEntry(lib_module: *mut core::ffi::c_void) -> bool {
+    pub unsafe extern "C" fn ModuleEntry(lib_module: *mut c_void) -> bool {
         unsafe { clap_wrapper_ModuleEntry(lib_module) }
     }
 
@@ -93,7 +116,7 @@ pub mod vst3 {
 
     #[unsafe(no_mangle)]
     #[cfg(target_os = "macos")]
-    pub unsafe extern "C" fn bundleEntry(lib_module: *mut core::ffi::c_void) -> bool {
+    pub unsafe extern "C" fn bundleEntry(lib_module: *mut c_void) -> bool {
         unsafe { clap_wrapper_bundleEntry(lib_module) }
     }
 
