@@ -2,8 +2,8 @@
 
 #define CLAP_WRAPPER_COCOA_CLASS_NSVIEW wrapAsAUV2_cocoaUI_nsview##CLAP_WRAPPER_OBJC_SUFFIX
 #define CLAP_WRAPPER_COCOA_CLASS wrapAsAUV2_cocoaUI##CLAP_WRAPPER_OBJC_SUFFIX
-#define CLAP_WRAPPER_TIMER_CALLBACK timerCallback_wrapAsAUV2_cocoaUI##CLAP_WRAPPER_OBJC_SUFFIX
-#define CLAP_WRAPPER_FILL_AUCV fillAUCV_wrapAsAUV2_cocoaUI##CLAP_WRAPPER_OBJC_SUFFIX
+#define CLAP_WRAPPER_TIMER_CALLBACK timerCallback_wrapAsAUV2_cocoaUI
+#define CLAP_WRAPPER_FILL_AUCV fillAUCV_wrapAsAUV2_cocoaUI
 #define CLAP_WRAPPER_EDITOR_NAME "Plugin View"
 #include "detail/auv2/wrappedview.asinclude.mm"
 
