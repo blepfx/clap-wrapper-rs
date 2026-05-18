@@ -155,8 +155,12 @@ fn build_auv2(debug: bool) {
     cc.define("STATICALLY_LINKED_CLAP_ENTRY", Some("1"));
     cc.define("DICTIONARY_STREAM_FORMAT_WRAPPER", Some("1"));
     cc.define(
-        "CLAP_WRAPPER_OBJC_SUFFIX",
-        Some(format!("{}", time).as_str()),
+        "CLAP_WRAPPER_COCOA_CLASS_NSVIEW",
+        Some(format!("wrapAsAUV2_cocoaUI_nsview_{}", time).as_str()),
+    );
+    cc.define(
+        "CLAP_WRAPPER_COCOA_CLASS",
+        Some(format!("wrapAsAUV2_cocoaUI_{}", time).as_str()),
     );
 
     // auv2 sdk
