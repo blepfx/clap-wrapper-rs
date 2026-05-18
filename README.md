@@ -25,7 +25,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clap-wrapper = { version = "0.3.0", features = ["vst3", "auv2", "parallel"] } # these features are enabled by default
+clap-wrapper = { version = "0.3.1", features = ["vst3", "auv2", "parallel"] } # these features are enabled by default
 ```
     
 Then, in your `lib.rs`:
@@ -52,10 +52,11 @@ See [validate.yml](.github/workflows/validate.yml) for a complete example of how
 
 ## Changelog
 
+- 0.3.1:
+    - Added unique suffix to generated ObjC classes as a temporary workaround
 - 0.3.0:
     - Updated `clap-wrapper` to latest (0.14.0). See [clap-wrapper changelog](https://github.com/free-audio/clap-wrapper/wiki/ChangeLog#0140-march-2026).
-    - Added an experimental bundler tool (see [bundler](bundler) folder) that can be used to 
-    automate the bundling process.
+    - Added an experimental bundler tool (see [bundler](bundler) folder) that can be used to automate the bundling process.
 - 0.2.1:
     - Added documentation
 - 0.2.0:

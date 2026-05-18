@@ -1,4 +1,7 @@
-use std::path::{PathBuf, absolute};
+use std::{
+    path::{PathBuf, absolute},
+    time::SystemTime,
+};
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
@@ -142,10 +145,19 @@ fn build_auv2(debug: bool) {
     cc.include("./external/clap-wrapper/src");
     cc.include("./external/AudioUnitSDK/include");
 
+    let time = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+
     cc.define("CLAP_WRAPPER_VERSION", Some("\"0.14.0\""));
     cc.define("CLAP_WRAPPER_BUILD_AUV2", Some("1"));
     cc.define("STATICALLY_LINKED_CLAP_ENTRY", Some("1"));
     cc.define("DICTIONARY_STREAM_FORMAT_WRAPPER", Some("1"));
+    cc.define(
+        "CLAP_WRAPPER_OBJC_SUFFIX",
+        Some(format!("{}", time).as_str()),
+    );
 
     // auv2 sdk
     cc.files([
