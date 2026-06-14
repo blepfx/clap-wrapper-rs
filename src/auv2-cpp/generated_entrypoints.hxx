@@ -11,7 +11,7 @@ AUV2_Type typeFromAUInstance(AudioComponentInstance *ci)
 
     if (desc.componentType == 'aufx')
         return AUV2_Type::aufx_effect;
-    if (desc.componentType == 'aumi')
+    if (desc.componentType == 'aumi' || desc.componentType == 'aumf')
         return AUV2_Type::aumi_noteeffect;
 
     return AUV2_Type::aumu_musicdevice;
