@@ -28,19 +28,6 @@ Add this to your `Cargo.toml`:
 clap-wrapper = { version = "0.3.1", features = ["vst3", "auv2", "parallel"] } # these features are enabled by default
 ```
 
-To build against a different `clap-wrapper` checkout, set `CLAP_WRAPPER_CPP_DIR` to its root directory:
-
-```sh
-CLAP_WRAPPER_CPP_DIR=/path/to/clap-wrapper cargo build
-```
-
-Add this to `.cargo/config.toml` to specify a path relative to your project:
-
-```toml
-[env]
-CLAP_WRAPPER_CPP_DIR = { value = "deps/clap-wrapper", relative = true }
-```
-    
 Then, in your `lib.rs`:
 ```rust
 // exports `GetPluginFactoryAUV2` symbol.
@@ -62,6 +49,26 @@ building the plugin library. Click [here](bundler/README.md) for more info about
 
 
 See [validate.yml](.github/workflows/validate.yml) for a complete example of how to build, bundle and validate a plugin.
+
+### Vendoring
+
+> [!WARNING]
+> This only works for simple `clap-wrapper` patches that do not add new files or remove existing files.
+> Consider forking `clap-wrapper-rs` for more complex patches
+
+To build against a different `clap-wrapper` checkout, set `CLAP_WRAPPER_CPP_DIR` to its root directory:
+
+```sh
+CLAP_WRAPPER_CPP_DIR=/path/to/clap-wrapper cargo build
+```
+
+Add this to `.cargo/config.toml` to specify a path relative to your project:
+
+```toml
+[env]
+CLAP_WRAPPER_CPP_DIR = { value = "deps/clap-wrapper", relative = true }
+```
+    
 
 ## Changelog
 
