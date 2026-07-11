@@ -27,6 +27,19 @@ Add this to your `Cargo.toml`:
 [dependencies]
 clap-wrapper = { version = "0.3.1", features = ["vst3", "auv2", "parallel"] } # these features are enabled by default
 ```
+
+To build against a different `clap-wrapper` checkout, set `CLAP_WRAPPER_CPP_DIR` to its root directory:
+
+```sh
+CLAP_WRAPPER_CPP_DIR=/path/to/clap-wrapper cargo build
+```
+
+Add this to `.cargo/config.toml` to specify a path relative to your project:
+
+```toml
+[env]
+CLAP_WRAPPER_CPP_DIR = { value = "deps/clap-wrapper", relative = true }
+```
     
 Then, in your `lib.rs`:
 ```rust
