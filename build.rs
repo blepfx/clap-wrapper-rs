@@ -41,7 +41,7 @@ fn build_vst3(os: &str, debug: bool, clap_wrapper_dir: &Path) {
     cc.include("./external/vst3sdk/public.sdk");
     cc.include("./external/vst3sdk/pluginterfaces");
 
-    cc.define("CLAP_WRAPPER_VERSION", Some("\"0.14.0\""));
+    cc.define("CLAP_WRAPPER_VERSION", Some("\"0.16.0\""));
     cc.define("CLAP_WRAPPER_BUILD_FOR_VST3", Some("1"));
     cc.define("STATICALLY_LINKED_CLAP_ENTRY", Some("1"));
 
@@ -156,7 +156,7 @@ fn build_auv2(debug: bool, clap_wrapper_dir: &Path) {
         .unwrap()
         .as_nanos();
 
-    cc.define("CLAP_WRAPPER_VERSION", Some("\"0.14.0\""));
+    cc.define("CLAP_WRAPPER_VERSION", Some("\"0.16.0\""));
     cc.define("CLAP_WRAPPER_BUILD_AUV2", Some("1"));
     cc.define("STATICALLY_LINKED_CLAP_ENTRY", Some("1"));
     cc.define("DICTIONARY_STREAM_FORMAT_WRAPPER", Some("1"));
