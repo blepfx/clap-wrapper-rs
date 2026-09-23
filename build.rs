@@ -80,9 +80,9 @@ fn build_vst3(os: &str, debug: bool, clap_wrapper_dir: &Path) {
     // clap wrapper shared
     cc.files([
         clap_wrapper_dir.join("src/clap_proxy.cpp"),
-        clap_wrapper_dir.join("src/detail/clap/fsutil.cpp"),
         clap_wrapper_dir.join("src/detail/shared/sha1.cpp"),
     ]);
+    cc.files(walk_files(clap_wrapper_dir.join("src/detail/clap"), "cpp"));
 
     // clap vst3 wrapper
     cc.files([
@@ -188,9 +188,9 @@ fn build_auv2(debug: bool, clap_wrapper_dir: &Path) {
     // clap wrapper shared
     cc.files([
         clap_wrapper_dir.join("src/clap_proxy.cpp"),
-        clap_wrapper_dir.join("src/detail/clap/fsutil.cpp"),
         clap_wrapper_dir.join("src/detail/shared/sha1.cpp"),
     ]);
+    cc.files(walk_files(clap_wrapper_dir.join("src/detail/clap"), "cpp"));
 
     // clap auv2 wrapper
     cc.files([
